@@ -1,0 +1,79 @@
+/**
+ * author:吴同岳
+ */
+import { Component2D } from "./component2d";
+
+export class Component6 extends Component2D {
+    
+    private canvas6Json: any;
+    private countTestData: number;
+/**
+ * 
+ * @param arg 饼状图的数据
+ */
+    public setTarget(arg: any): void {
+        let json : any = [
+            {
+                count:55
+            },
+            {
+                count:23
+            },
+            {
+                count:45
+            },
+            {
+                count:32
+            }
+        ]
+        arg ? this.canvas6Json = arg : json;
+        if (!this.isPlaying()) {
+            this.start();
+        }else{
+            throw new Error("Method not implemented.");
+        }
+    }
+    
+    public constructor(id: string) {
+        super(id);
+        this.addTimeSlice(0, 0.5, "elasticOut");
+        // 初始化画布属性
+        const node=this.node;
+            node.style.height = '400px';
+            node.style.width = '500px';
+            node.style.background = "#F0F0F0";
+            node.style.position = "absolute";
+            node.style.right = "0";
+            node.style.bottom = "0";
+        
+        // 静态渲染函数
+        this.staticInit();
+    }
+
+    protected update(): void {
+        let value = this.getTime(0);
+        if(this.canvas6Json) this.countTestData = value * this.canvas6Json[0].count;
+    }
+    
+    protected render(): void {
+            
+    }
+
+    protected staticInit(): void {
+        let ctx: CanvasRenderingContext2D | null = this.context;
+        if(ctx){
+            ctx.beginPath();
+            ctx.arc(40, 40, 20, 0, 2*Math.PI);
+            ctx.fillStyle = "blue";
+            ctx.fill();
+            ctx.closePath();
+
+            ctx.beginPath();
+            ctx.textAlign = "center";
+            ctx.font = "25px Arial";
+            ctx.fillStyle='#fff';
+            ctx.fillText('6', 40, 50);
+
+        }
+    }
+}

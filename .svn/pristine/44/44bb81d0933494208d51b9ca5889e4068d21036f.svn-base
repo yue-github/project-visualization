@@ -1,0 +1,24 @@
+import { Component2D } from "./component2d";
+
+export class Component1 extends Component2D {
+    
+    public constructor(id: string) {
+        super(id);
+    }
+
+    protected update(): void {
+        // throw new Error("Method not implemented.");
+    }
+    
+    protected render(): void {
+        // throw new Error("Method not implemented.");
+    }
+
+    /**
+     * 设置目标数据
+     * @param arg json结构的参数，例子如下: ...
+     */
+    public setTarget(arg: any): void {
+
+    }
+}

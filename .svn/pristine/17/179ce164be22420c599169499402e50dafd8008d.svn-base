@@ -1,0 +1,196 @@
+/**
+ * author:吴同岳
+ */
+import { Component2D } from "./component2d";
+
+export class Component6 extends Component2D {
+    
+    private canvas6Json: any;
+    private countTestData: number;
+    private canvas6JsonClone: any;
+    private circleR: any;
+/**
+ * 
+ * @param arg 初始数据
+ */
+    public setTarget(arg: any = null): void {
+        let json : any = [
+            {
+                count: 150,
+                color: '#28FF28'
+            },
+            {
+                count: 23,
+                color: 'blue'
+            },
+            {
+                count: 45,
+                color: 'yellow'
+            },
+            {
+                count: 32,
+                color: 'pink'
+            }
+        ]
+        arg?this.canvas6Json = arg:this.canvas6Json = json;
+        // 深度克隆操作
+        if(this.canvas6Json) {
+            let arr: any = [];
+            for (let obj of this.canvas6Json){
+                let {...cloneObj}= obj;
+                arr.push(cloneObj);
+            }
+            this.canvas6JsonClone = arr;
+        }
+        
+        if (!this.isPlaying()) {
+            this.start();
+        }
+    }
+    
+    public constructor(id: string) {
+        super(id);
+        this.addTimeSlice(0, 2, "backIn");
+        this.addTimeSlice(1, 0.5, "elasticOut");
+        this.addTimeSlice(2, 2, "quadraticInOut");
+        this.addTimeSlice(3, 4, "linear");
+        /**
+         * canvas6节点
+         */
+        const node=this.node;
+            node.style.height = '400px';
+            node.style.width = '500px';
+            node.style.background = "#ccc";
+            node.style.position = "absolute";
+            node.style.right = "0";
+            node.style.bottom = "0";
+
+            this.circleR=200;
+        /**
+         * 静态初始化
+         */
+        this.staticInit();
+    }
+
+    protected update(): void {
+        if(this.canvas6Json){
+           for(let index in this.canvas6Json) {
+            this.canvas6Json[index].count = this.canvas6JsonClone[index].count * this.getTime(parseInt(index));
+           }
+        }
+    }
+    
+    protected render(): void {
+        this.drawSector();
+        this.drawCircleOut();
+    }
+
+    /**
+     * 渲染静态
+     */
+    protected staticInit(): void {
+        let ctx: CanvasRenderingContext2D | null = this.context;
+        if(ctx){
+            // 擦除
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(40, 40, 20, 0, 2 * Math.PI);
+            ctx.fillStyle = "blue";
+            ctx.fill();
+            ctx.closePath();
+
+            ctx.beginPath();
+            ctx.textAlign = "center";
+            ctx.font = "25px Arial";
+            ctx.fillStyle = '#fff';
+            ctx.fillText('6', 40, 50);
+            ctx.closePath();
+
+            ctx.beginPath();
+            ctx.font = "25px Arial";
+            ctx.fillStyle = 'blue';
+            ctx.fillText('工艺占比', 120, 50);
+            ctx.closePath();
+            this.clear()
+            // 改变图原点参照位置
+            ctx.translate(400, 300);
+        }
+    }
+
+    /**
+     * 整理圆的终点角度
+     */
+    protected drawHandle(num): number {
+        let countAll: number = 0;
+        this.canvas6Json.forEach((ele, index)=> {
+            countAll += ele.count;
+        });
+        let count: number = 0;
+        this.canvas6Json.forEach((element, index) => {
+            if(index <= num){
+                count += element.count;
+            }
+        });
+        return (count / countAll * 360) * Math.PI / 180;
+    }
+
+    protected drawSector(): void {
+        if(this.clear()) {
+            let ctx: CanvasRenderingContext2D | null = this.context;
+            // 静态模拟画圆
+            if(ctx && this.canvas6Json){
+                ctx.save();
+                this.canvas6Json.forEach((ele, index)=> {
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    if(index == 0) {
+                        ctx.arc(0, 0, this.circleR, 0, this.drawHandle(index));
+                    }else {
+                        ctx.arc(0, 0, this.circleR, this.drawHandle(index-1), this.drawHandle(index));
+                    }
+                    ctx.fillStyle = ele.color;
+                    ctx.fill();
+                    ctx.closePath();
+                });
+            }
+        }
+        
+    }
+    
+    /**
+     * 清除画布
+     */
+    protected clear() {
+        let ctx: CanvasRenderingContext2D | null = this.context;
+        if(ctx) {
+            ctx.beginPath();
+            ctx.clearRect(0, 100, 500, 400);
+            ctx.closePath();
+            return true;
+        }
+    }
+
+    /**
+     * 画图像外围圈
+     */
+    protected drawCircleOut(): void{
+        let ctx: CanvasRenderingContext2D | null = this.context;
+        if(ctx) {
+            ctx.save();
+            //开始新路径
+            ctx.beginPath();
+            //重新设置画笔
+            // ctx.lineWidth=10;
+            // ctx.strokeStyle="blue";
+            // var grd=ctx.createRadialGradient(0, 0, this.circleR-100, 0, 0, this.circleR+10);
+            // grd.addColorStop(0,"blue");
+            // grd.addColorStop(1,"red");
+            ctx.arc(0, 0, this.circleR, 0, Math.PI * 2);
+            // ctx.strokeStyle=grd;
+            ctx.stroke();
+            //封闭新路径
+            ctx.closePath();
+        }
+    }
+}

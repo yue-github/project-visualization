@@ -1,0 +1,33 @@
+import { Component1 } from "./component1";
+import { Component2 } from "./component2";
+import { Component3 } from "./component3";
+import { Component4 } from "./component4";
+import { Component5 } from "./component5";
+import { Comunication } from "./comunication";
+import { StaticCom } from "./staticcom";
+import { DynamicCom } from "./dynamiccom";
+
+var comp1 = new Component1("canvas1");
+var comp2 = new Component2("canvas2");
+var comp3 = new Component3("canvas3");
+var comp4 = new Component4("canvas4");
+var comp5 = new Component5("canvas5");
+
+let debug = true;
+
+let com: Comunication;
+if (debug) com = new StaticCom();
+else com = new DynamicCom();
+
+setInterval(function() {
+    let ret = com.func1(null);
+    comp1.setTarget(ret);
+    ret = com.func2(null);
+    comp2.setTarget(ret);
+    ret = com.func3(null);
+    comp3.setTarget(ret);
+    ret = com.func4(null);
+    comp4.setTarget(ret);
+    ret = com.func5(null);
+    comp5.setTarget(ret);
+}, 6000);
